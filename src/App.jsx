@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const LOGO = "data:image/jpeg;base64,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";
 
@@ -127,40 +127,99 @@ const Btn = ({children,disabled,onClick,ghost,small,style={}}) => (
   <button onClick={onClick} disabled={disabled} style={{width:"100%",padding:small?"10px":"15px 20px",borderRadius:12,border:ghost?`1.5px solid ${C3}`:"none",background:ghost?"transparent":disabled?C3:Y,color:ghost?LT:disabled?MT:BK,fontFamily:"'DM Sans',sans-serif",fontSize:small?13:15,fontWeight:800,cursor:disabled?"not-allowed":"pointer",transition:"opacity .15s",...style}}>{children}</button>
 );
 
-// ── MAP ────────────────────────────────────────────────────────────────────────
-const MapSVG = ({shops,highlight,onPin}) => (
-  <div style={{borderRadius:14,overflow:"hidden",border:`1.5px solid ${C2}`}}>
-    <svg viewBox="0 0 100 75" width="100%" style={{display:"block",background:"#0e0e0e"}}>
-      {[15,30,45,60,75,90].map(x=><line key={x} x1={x} y1="0" x2={x} y2="75" stroke="#161616" strokeWidth=".3"/>)}
-      {[15,30,45,60].map(y=><line key={y} x1="0" y1={y} x2="100" y2={y} stroke="#161616" strokeWidth=".3"/>)}
-      <path d="M0,50 Q25,48 50,45 Q75,42 100,38" stroke="#222" strokeWidth="2" fill="none"/>
-      <path d="M0,35 Q30,38 55,42 Q80,46 100,55" stroke="#1c1c1c" strokeWidth="1.2" fill="none"/>
-      <path d="M30,0 Q33,25 36,45 Q38,60 40,75" stroke="#1c1c1c" strokeWidth="1.2" fill="none"/>
-      <path d="M60,0 Q62,20 65,40 Q67,58 68,75" stroke="#1a1a1a" strokeWidth="1" fill="none"/>
-      <ellipse cx="52" cy="55" rx="9" ry="5.5" fill="#0f1f0f" opacity=".9"/>
-      <text x="52" y="57" textAnchor="middle" fontSize="3" fill="#1d3d1d">Sabana</text>
-      {shops.map(s=>{
-        const sel=highlight===s.id;
-        return(
-          <g key={s.id} style={{cursor:"pointer"}} onClick={()=>onPin&&onPin(s)}>
-            {sel&&<circle cx={s.mapX} cy={s.mapY} r="8" fill={Y} opacity=".15"/>}
-            <circle cx={s.mapX} cy={s.mapY} r={sel?5:4} fill={sel?Y:s.open?"#c9a800":"#333"} stroke={sel?"#fff":"transparent"} strokeWidth="1"/>
-            <text x={s.mapX} y={s.mapY+1} textAnchor="middle" fontSize="3.5" fill={s.open?BK:"#666"} fontWeight="bold">✂</text>
-            <text x={s.mapX} y={s.mapY+8.5} textAnchor="middle" fontSize="3" fill={sel?Y:"#666"}>{s.name}</text>
-          </g>
-        );
-      })}
-      <circle cx="50" cy="63" r="2.5" fill="#4ade80"/>
-      <circle cx="50" cy="63" r="5.5" fill="#4ade80" opacity=".12"/>
-      <text x="50" y="71" textAnchor="middle" fontSize="3" fill="#4ade80">Tú</text>
-    </svg>
-    <div style={{background:"#0e0e0e",padding:"8px 14px",display:"flex",alignItems:"center",gap:8,borderTop:`1px solid ${C2}`}}>
-      <span style={{width:7,height:7,borderRadius:"50%",background:"#4ade80",display:"inline-block"}}/>
-      <span style={{fontSize:11,color:MT,fontFamily:"'DM Mono',monospace"}}>Tu ubicación · San José, CR</span>
-      <span style={{marginLeft:"auto",fontSize:10,color:Y,fontFamily:"'DM Mono',monospace"}}>✂ barbería</span>
+// ── MAP (Leaflet - Mapa real de Costa Rica) ────────────────────────────────────
+const SHOP_COORDS = {
+  "s1": { lat: 9.9333, lng: -84.1500 }, // Escazú
+  "s2": { lat: 9.9381, lng: -84.1024 }, // Rohrmoser / La Sabana
+  "s3": { lat: 9.9346, lng: -84.0500 }, // San Pedro
+};
+
+const MapSVG = ({shops, highlight, onPin}) => {
+  const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const [ready, setReady] = useState(!!window.L);
+
+  useEffect(() => {
+    if (!document.getElementById("leaflet-css")) {
+      const link = document.createElement("link");
+      link.id = "leaflet-css";
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      document.head.appendChild(link);
+    }
+    if (!window.L) {
+      const script = document.createElement("script");
+      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+      script.onload = () => setReady(true);
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!ready || !mapRef.current || mapInstanceRef.current) return;
+
+    const map = window.L.map(mapRef.current, {
+      center: [9.9365, -84.1050],
+      zoom: 13,
+      zoomControl: false,
+      attributionControl: false,
+    });
+
+    window.L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Inject popup style
+    if (!document.getElementById("ss-popup-style")) {
+      const st = document.createElement("style");
+      st.id = "ss-popup-style";
+      st.innerHTML = `.ss-popup .leaflet-popup-content-wrapper{background:#141414;border:1.5px solid #2a2a2a;border-radius:12px;padding:0;box-shadow:0 4px 20px rgba(0,0,0,.7);color:#fff}.ss-popup .leaflet-popup-content{margin:0}.ss-popup .leaflet-popup-tip{background:#141414}`;
+      document.head.appendChild(st);
+    }
+
+    shops.forEach(s => {
+      const coords = SHOP_COORDS[s.id];
+      if (!coords) return;
+      const isSelected = highlight === s.id;
+      const icon = window.L.divIcon({
+        html: `<div style="width:${isSelected?40:34}px;height:${isSelected?40:34}px;background:${Y};border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(45deg);font-size:${isSelected?16:13}px;line-height:1;display:block;text-align:center;margin-top:4px">✂</span></div>`,
+        className: "",
+        iconSize: [isSelected?40:34, isSelected?40:34],
+        iconAnchor: [isSelected?20:17, isSelected?40:34],
+        popupAnchor: [0, -36],
+      });
+      window.L.marker([coords.lat, coords.lng], {icon})
+        .addTo(map)
+        .bindPopup(`<div style="padding:10px;min-width:150px"><div style="font-weight:700;font-size:13px;margin-bottom:3px;color:#fff">${s.name}</div><div style="font-size:11px;color:#888;margin-bottom:5px">📍 ${s.location}</div><div style="font-size:11px;color:${Y}">★ ${s.rating} &nbsp;·&nbsp; <span style="color:${s.open?"#22c55e":"#ef4444"}">${s.open?"Abierto":"Cerrado"}</span></div></div>`, {className:"ss-popup"})
+        .on("click", () => onPin && onPin(s));
+    });
+
+    // User location
+    window.L.circleMarker([9.9350, -84.0880], {
+      radius: 8, color: "#4ade80", fillColor: "#4ade80",
+      fillOpacity: 1, weight: 3,
+    }).addTo(map).bindPopup(`<div style="padding:8px;color:#fff;font-size:12px"><b>📍 Tu ubicación</b></div>`, {className:"ss-popup"});
+
+    mapInstanceRef.current = map;
+  }, [ready]);
+
+  return (
+    <div style={{borderRadius:14,overflow:"hidden",border:`1.5px solid ${C2}`}}>
+      {!ready && (
+        <div style={{height:210,background:"#0e0e0e",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:8}}>
+          <div style={{fontSize:20}}>🗺️</div>
+          <span style={{color:MT,fontSize:12,fontFamily:"'DM Mono',monospace"}}>Cargando mapa...</span>
+        </div>
+      )}
+      <div ref={mapRef} style={{height:210,display:ready?"block":"none"}}/>
+      <div style={{background:"#0e0e0e",padding:"8px 14px",display:"flex",alignItems:"center",gap:8,borderTop:`1px solid ${C2}`}}>
+        <span style={{width:7,height:7,borderRadius:"50%",background:"#4ade80",display:"inline-block",flexShrink:0}}/>
+        <span style={{fontSize:11,color:MT,fontFamily:"'DM Mono',monospace"}}>San José, Costa Rica 🇨🇷</span>
+        <span style={{marginLeft:"auto",fontSize:10,color:Y,fontFamily:"'DM Mono',monospace",flexShrink:0}}>✂ barbería</span>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ── SPLASH ─────────────────────────────────────────────────────────────────────
 const Splash = ({onDone}) => {
@@ -374,16 +433,121 @@ const ShopDetail = ({shop,onBack,onBarber}) => (
   </div>
 );
 
+// ── MINI CALENDAR ──────────────────────────────────────────────────────────────
+const MiniCalendar = ({selectedDate, onSelect}) => {
+  const today = new Date();
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+
+  const DAYS = ["Do","Lu","Ma","Mi","Ju","Vi","Sá"];
+  const MONTHS = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+
+  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+  const prevMonth = () => {
+    if(viewMonth === 0){ setViewMonth(11); setViewYear(y=>y-1); }
+    else setViewMonth(m=>m-1);
+  };
+  const nextMonth = () => {
+    if(viewMonth === 11){ setViewMonth(0); setViewYear(y=>y+1); }
+    else setViewMonth(m=>m+1);
+  };
+
+  const isPast = (d) => {
+    const date = new Date(viewYear, viewMonth, d);
+    const t = new Date(); t.setHours(0,0,0,0);
+    return date < t;
+  };
+  const isToday = (d) => {
+    return d === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
+  };
+  const isSelected = (d) => {
+    if(!selectedDate) return false;
+    const s = new Date(selectedDate);
+    return d === s.getDate() && viewMonth === s.getMonth() && viewYear === s.getFullYear();
+  };
+
+  const cells = [];
+  for(let i=0;i<firstDay;i++) cells.push(null);
+  for(let d=1;d<=daysInMonth;d++) cells.push(d);
+
+  return(
+    <div style={{background:C1,border:`1.5px solid ${C2}`,borderRadius:14,padding:"14px 12px",marginBottom:20}}>
+      {/* Header */}
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
+        <button onClick={prevMonth} style={{background:"none",border:"none",color:MT,fontSize:18,cursor:"pointer",padding:"0 6px"}}>‹</button>
+        <span style={{fontFamily:"'DM Sans',sans-serif",fontWeight:700,fontSize:14,color:"#fff"}}>
+          {MONTHS[viewMonth]} {viewYear}
+        </span>
+        <button onClick={nextMonth} style={{background:"none",border:"none",color:MT,fontSize:18,cursor:"pointer",padding:"0 6px"}}>›</button>
+      </div>
+      {/* Day names */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",marginBottom:6}}>
+        {DAYS.map(d=>(
+          <div key={d} style={{textAlign:"center",fontSize:10,fontFamily:"'DM Mono',monospace",color:MT,padding:"2px 0",letterSpacing:0.5}}>{d}</div>
+        ))}
+      </div>
+      {/* Day cells */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3}}>
+        {cells.map((d,i)=>{
+          if(!d) return <div key={i}/>;
+          const past = isPast(d);
+          const sel = isSelected(d);
+          const tod = isToday(d);
+          return(
+            <button key={i} onClick={()=>{
+              if(past) return;
+              const picked = new Date(viewYear, viewMonth, d);
+              onSelect(picked.toISOString().split("T")[0]);
+            }} style={{
+              background: sel ? Y : tod ? C2 : "transparent",
+              color: sel ? BK : past ? "#333" : tod ? Y : "#ccc",
+              border: sel ? `1.5px solid ${Y}` : tod ? `1.5px solid ${C3}` : "1.5px solid transparent",
+              borderRadius:8,
+              padding:"7px 0",
+              fontSize:12,
+              fontFamily:"'DM Mono',monospace",
+              fontWeight: sel||tod ? 700 : 400,
+              cursor: past ? "default" : "pointer",
+              transition:"all .15s",
+              opacity: past ? 0.3 : 1,
+            }}>{d}</button>
+          );
+        })}
+      </div>
+      {/* Today shortcut */}
+      <button onClick={()=>onSelect(today.toISOString().split("T")[0])} style={{
+        marginTop:12, width:"100%", background:"transparent",
+        border:`1px solid ${C3}`, borderRadius:8, padding:"7px",
+        fontSize:11, color:MT, fontFamily:"'DM Sans',sans-serif", cursor:"pointer"
+      }}>Hoy — {today.toLocaleDateString("es-CR",{weekday:"long",day:"numeric",month:"long"})}</button>
+    </div>
+  );
+};
+
 // ── BARBER PROFILE ─────────────────────────────────────────────────────────────
 const BarberProfile = ({barber,shop,onBack,onBooked}) => {
   const [tab,setTab] = useState("info");
+  const [selectedDate,setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
   const [slot,setSlot] = useState(null);
   const [loading,setLoading] = useState(false);
   const [done,setDone] = useState(false);
+
+  const formatDate = (iso) => {
+    const d = new Date(iso+"T12:00:00");
+    const today = new Date(); today.setHours(0,0,0,0);
+    const sel = new Date(iso+"T00:00:00");
+    const diff = Math.round((sel-today)/(1000*60*60*24));
+    if(diff===0) return "Hoy";
+    if(diff===1) return "Mañana";
+    return d.toLocaleDateString("es-CR",{weekday:"short",day:"numeric",month:"short"});
+  };
+
   const book = () => {
-    if(!slot) return;
+    if(!slot||!selectedDate) return;
     setLoading(true);
-    setTimeout(()=>{setLoading(false);setDone(true);setTimeout(()=>{setDone(false);setSlot(null);onBooked&&onBooked();},2000);},1200);
+    setTimeout(()=>{setLoading(false);setDone(true);setTimeout(()=>{setDone(false);setSlot(null);onBooked&&onBooked();},2500);},1200);
   };
   const TABS = ["Info","Reservar","Reseñas"];
   return(
@@ -429,24 +593,73 @@ const BarberProfile = ({barber,shop,onBack,onBooked}) => {
 
         {tab==="reservar"&&(
           <div>
-            <div style={{fontFamily:"'DM Mono',monospace",fontSize:10,color:MT,letterSpacing:2,marginBottom:12,textTransform:"uppercase"}}>Horarios disponibles — Hoy</div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:24}}>
+            {/* Step 1 — Calendar */}
+            <div style={{fontFamily:"'DM Mono',monospace",fontSize:10,color:MT,letterSpacing:2,marginBottom:10,textTransform:"uppercase",display:"flex",alignItems:"center",gap:8}}>
+              <span style={{background:Y,color:BK,borderRadius:"50%",width:18,height:18,display:"inline-flex",alignItems:"center",justifyContent:"center",fontWeight:700,fontSize:10,flexShrink:0}}>1</span>
+              Elegí la fecha
+            </div>
+            <MiniCalendar selectedDate={selectedDate} onSelect={(d)=>{setSelectedDate(d);setSlot(null);}}/>
+
+            {/* Step 2 — Time slots */}
+            <div style={{fontFamily:"'DM Mono',monospace",fontSize:10,color:MT,letterSpacing:2,marginBottom:10,textTransform:"uppercase",display:"flex",alignItems:"center",gap:8}}>
+              <span style={{background:selectedDate?Y:C3,color:selectedDate?BK:MT,borderRadius:"50%",width:18,height:18,display:"inline-flex",alignItems:"center",justifyContent:"center",fontWeight:700,fontSize:10,flexShrink:0}}>2</span>
+              Horarios disponibles — {selectedDate ? formatDate(selectedDate) : "Elegí una fecha"}
+            </div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:20}}>
               {barber.slots.map(s=>(
-                <button key={s} onClick={()=>setSlot(s)} style={{border:`1.5px solid ${slot===s?Y:C2}`,background:slot===s?Y:C1,color:slot===s?BK:"#aaa",borderRadius:8,padding:"9px 15px",fontFamily:"'DM Mono',monospace",fontSize:13,cursor:"pointer",fontWeight:slot===s?700:400,transition:"all .15s"}}>{s}</button>
+                <button key={s} onClick={()=>setSlot(s)} style={{
+                  border:`1.5px solid ${slot===s?Y:C2}`,
+                  background:slot===s?Y:C1,
+                  color:slot===s?BK:"#aaa",
+                  borderRadius:8,padding:"9px 15px",
+                  fontFamily:"'DM Mono',monospace",fontSize:13,
+                  cursor:"pointer",fontWeight:slot===s?700:400,
+                  transition:"all .15s"
+                }}>{s}</button>
               ))}
             </div>
-            <div style={{display:"flex",justifyContent:"space-between",padding:"14px 16px",background:C1,border:`1.5px solid ${C2}`,borderRadius:12,marginBottom:16}}>
-              <span style={{fontSize:14,color:LT}}>Corte + Barba</span>
-              <span style={{fontFamily:"'DM Mono',monospace",fontWeight:700,fontSize:16,color:Y}}>₡{barber.price.toLocaleString()}</span>
-            </div>
+
+            {/* Summary card */}
+            {slot && selectedDate && (
+              <div style={{background:"#0a1200",border:`1.5px solid ${Y}`,borderRadius:12,padding:"12px 16px",marginBottom:16}}>
+                <div style={{fontSize:11,color:MT,fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:8,textTransform:"uppercase"}}>Resumen de tu cita</div>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+                  <span style={{fontSize:13,color:LT}}>Barbero</span>
+                  <span style={{fontSize:13,color:"#fff",fontWeight:600}}>{barber.name}</span>
+                </div>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+                  <span style={{fontSize:13,color:LT}}>Fecha</span>
+                  <span style={{fontSize:13,color:Y,fontWeight:600}}>{formatDate(selectedDate)}</span>
+                </div>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+                  <span style={{fontSize:13,color:LT}}>Hora</span>
+                  <span style={{fontSize:13,color:Y,fontWeight:600}}>{slot}</span>
+                </div>
+                <div style={{display:"flex",justifyContent:"space-between",borderTop:`1px solid ${C2}`,paddingTop:8,marginTop:4}}>
+                  <span style={{fontSize:13,color:LT}}>Total</span>
+                  <span style={{fontFamily:"'DM Mono',monospace",fontWeight:700,fontSize:16,color:Y}}>₡{barber.price.toLocaleString()}</span>
+                </div>
+              </div>
+            )}
+
+            {!slot && (
+              <div style={{display:"flex",justifyContent:"space-between",padding:"14px 16px",background:C1,border:`1.5px solid ${C2}`,borderRadius:12,marginBottom:16}}>
+                <span style={{fontSize:14,color:LT}}>Corte + Barba</span>
+                <span style={{fontFamily:"'DM Mono',monospace",fontWeight:700,fontSize:16,color:Y}}>₡{barber.price.toLocaleString()}</span>
+              </div>
+            )}
+
             {done?(
               <div style={{background:"#0a1f0a",border:"1.5px solid #22c55e",borderRadius:12,padding:20,textAlign:"center"}}>
-                <div style={{fontSize:28,marginBottom:8}}>✅</div>
-                <div style={{color:"#22c55e",fontWeight:700,fontSize:16}}>¡Cita confirmada!</div>
-                <div style={{color:LT,fontSize:13,marginTop:4}}>{barber.name} · {slot}</div>
+                <div style={{fontSize:32,marginBottom:8}}>✅</div>
+                <div style={{color:"#22c55e",fontWeight:700,fontSize:16,marginBottom:4}}>¡Cita confirmada!</div>
+                <div style={{color:LT,fontSize:13}}>{barber.name}</div>
+                <div style={{color:"#fff",fontSize:14,fontWeight:600,marginTop:4}}>{formatDate(selectedDate)} · {slot}</div>
               </div>
             ):(
-              <Btn onClick={book} disabled={!slot||loading}>{loading?"⏳ Confirmando...":slot?`Agendar — ${slot}`:"Seleccioná un horario"}</Btn>
+              <Btn onClick={book} disabled={!slot||!selectedDate||loading}>
+                {loading?"⏳ Confirmando...":slot&&selectedDate?`Confirmar — ${formatDate(selectedDate)} ${slot}`:"Seleccioná fecha y horario"}
+              </Btn>
             )}
           </div>
         )}
