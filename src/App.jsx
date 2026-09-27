@@ -735,70 +735,324 @@ const MisCitas = () => (
 
 // ── PANEL BARBERO ──────────────────────────────────────────────────────────────
 const PanelBarbero = () => {
-  const [sub,setSub] = useState("agenda");
+  const [sub,setSub] = useState("inicio");
+  const TABS = [
+    {k:"inicio",  ico:"🏠", lbl:"Inicio"},
+    {k:"agenda",  ico:"📅", lbl:"Agenda"},
+    {k:"equipo",  ico:"✂️",  lbl:"Equipo"},
+    {k:"clientes",ico:"👥", lbl:"Clientes"},
+    {k:"ingresos",ico:"💰", lbl:"Ingresos"},
+  ];
   return(
-    <div style={{padding:"20px 16px"}}>
-      <Card style={{display:"flex",gap:14,alignItems:"center",marginBottom:24}}>
-        <Av initials="CM" size={56} dom={false}/>
-        <div style={{flex:1}}>
-          <div style={{fontFamily:"'Playfair Display',serif",fontWeight:900,fontSize:18,color:"#fff"}}>Carlos Mendoza</div>
-          <div style={{fontSize:12,color:MT}}>Classic Cuts · Escazú</div>
-          <div style={{display:"flex",alignItems:"center",gap:5,marginTop:4}}><Stars n={4.9} size={12}/><span style={{fontFamily:"'DM Mono',monospace",fontSize:11,fontWeight:700,color:Y}}>4.9</span></div>
-        </div>
-        <div style={{width:10,height:10,borderRadius:"50%",background:"#22c55e"}}/>
-      </Card>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:24}}>
-        {[{l:"Citas hoy",v:"4",hi:true},{l:"Este mes",v:"47"},{l:"Ingresos",v:"₡450K"}].map((s,i)=>(
-          <div key={i} style={{background:s.hi?Y:C1,color:s.hi?BK:"#fff",borderRadius:12,padding:"14px 10px",border:s.hi?"none":`1.5px solid ${C2}`,textAlign:"center"}}>
-            <div style={{fontFamily:"'DM Mono',monospace",fontWeight:700,fontSize:14,marginBottom:3}}>{s.v}</div>
-            <div style={{fontSize:10,color:s.hi?"#666":MT,textTransform:"uppercase",letterSpacing:.5}}>{s.l}</div>
+    <div style={{paddingBottom:100}}>
+      <div style={{padding:"16px 16px 0"}}>
+        {/* Header */}
+        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
+          <div style={{width:48,height:48,borderRadius:14,background:Y,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Playfair Display',serif",fontWeight:900,fontSize:20,color:BK}}>CC</div>
+          <div style={{flex:1}}>
+            <div style={{fontFamily:"'Playfair Display',serif",fontWeight:900,fontSize:17,color:"#fff"}}>Classic Cuts</div>
+            <div style={{fontSize:11,color:MT}}>Escazú · Plan Pro ⭐</div>
           </div>
-        ))}
-      </div>
-      <div style={{display:"flex",gap:8,marginBottom:20}}>
-        {["agenda","horarios","ingresos"].map(t=>(
-          <button key={t} onClick={()=>setSub(t)} style={{flex:1,padding:"9px 4px",border:`1.5px solid ${sub===t?Y:C2}`,background:sub===t?Y:C1,color:sub===t?BK:MT,borderRadius:10,fontFamily:"'DM Sans',sans-serif",fontSize:11,fontWeight:700,cursor:"pointer",textTransform:"capitalize"}}>{t}</button>
-        ))}
-      </div>
-      {sub==="agenda"&&(
-        <div style={{display:"flex",flexDirection:"column",gap:10}}>
-          {MY_APTS.map(a=>(
-            <Card key={a.id}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <div><div style={{fontWeight:600,fontSize:14,color:"#fff",marginBottom:2}}>{a.service}</div><div style={{fontSize:12,color:MT}}>{a.date} · {a.time}</div></div>
-                <Pill yellow={a.status==="confirmada"}>{a.status}</Pill>
-              </div>
-            </Card>
+          <div style={{display:"flex",alignItems:"center",gap:5}}>
+            <div style={{width:7,height:7,borderRadius:"50%",background:"#22c55e"}}/>
+            <span style={{fontSize:11,color:"#22c55e"}}>Abierto</span>
+          </div>
+        </div>
+        {/* Tabs */}
+        <div style={{display:"flex",gap:6,marginBottom:18,overflowX:"auto",paddingBottom:4}}>
+          {TABS.map(({k,ico,lbl})=>(
+            <button key={k} onClick={()=>setSub(k)} style={{
+              flexShrink:0,display:"flex",alignItems:"center",gap:5,
+              padding:"7px 12px",border:`1.5px solid ${sub===k?Y:C2}`,
+              background:sub===k?Y:C1,color:sub===k?BK:MT,
+              borderRadius:20,fontFamily:"'DM Sans',sans-serif",
+              fontSize:11,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap"
+            }}><span>{ico}</span>{lbl}</button>
           ))}
         </div>
-      )}
-      {sub==="horarios"&&(
-        <Card style={{padding:0,overflow:"hidden"}}>
-          {["09:00","10:00","11:30","13:00","15:00","16:00","17:30"].map((s,i)=>{
-            const occ=i===2||i===4;
-            return(<div key={s} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"13px 16px",borderBottom:i<6?`1px solid ${C2}`:"none"}}><span style={{fontFamily:"'DM Mono',monospace",fontSize:13,color:"#ccc"}}>{s}</span><Pill yellow={occ}>{occ?"Ocupado":"Libre"}</Pill></div>);
-          })}
-        </Card>
-      )}
-      {sub==="ingresos"&&(
-        <div>
-          <div style={{marginBottom:16}}>
-            <div style={{fontSize:12,color:MT,marginBottom:2}}>Total esta semana</div>
-            <div style={{fontFamily:"'DM Mono',monospace",fontSize:32,fontWeight:700,color:Y}}>₡112,500</div>
-            <div style={{fontSize:12,color:"#22c55e",marginTop:4}}>↑ 18% vs semana pasada</div>
-          </div>
-          <Card>
-            <div style={{display:"flex",alignItems:"flex-end",gap:6,height:80}}>
-              {[55,80,45,90,65,100,72].map((h,i)=>(
-                <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-                  <div style={{width:"100%",height:h*.75,background:i===5?Y:C3,borderRadius:4}}/>
-                  <span style={{fontSize:9,color:i===5?Y:MT,fontFamily:"'DM Mono',monospace"}}>{["L","M","M","J","V","S","D"][i]}</span>
+      </div>
+
+      <div style={{padding:"0 16px"}}>
+
+        {/* ── INICIO ── */}
+        {sub==="inicio"&&(
+          <div>
+            {/* KPIs */}
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:14}}>
+              {[
+                {ico:"📅",l:"Citas hoy",v:"4",hi:true},
+                {ico:"💰",l:"Ingresos hoy",v:"₡38,500",hi:false},
+                {ico:"📆",l:"Citas este mes",v:"47",hi:false},
+                {ico:"⭐",l:"Calificación",v:"4.9",hi:false},
+              ].map((s,i)=>(
+                <div key={i} style={{background:s.hi?Y:C1,borderRadius:14,padding:"14px 14px",border:s.hi?"none":`1.5px solid ${C2}`}}>
+                  <div style={{fontSize:18,marginBottom:6}}>{s.ico}</div>
+                  <div style={{fontFamily:"'DM Mono',monospace",fontWeight:700,fontSize:18,color:s.hi?BK:Y,marginBottom:2}}>{s.v}</div>
+                  <div style={{fontSize:10,color:s.hi?"#666":MT}}>{s.l}</div>
                 </div>
               ))}
             </div>
-          </Card>
-        </div>
-      )}
+            {/* Próximas citas */}
+            <div style={{background:C1,border:`1.5px solid ${C2}`,borderRadius:14,padding:"14px 16px",marginBottom:14}}>
+              <div style={{fontSize:11,color:MT,fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:12,textTransform:"uppercase"}}>Próximas citas hoy</div>
+              {[
+                {hora:"10:00",cliente:"Rodrigo V.",servicio:"Fade + Barba",barbero:"Carlos",status:"confirmada"},
+                {hora:"11:30",cliente:"Luis M.",servicio:"Corte clásico",barbero:"Marco",status:"confirmada"},
+                {hora:"13:00",cliente:"Jorge P.",servicio:"Barba sola",barbero:"Carlos",status:"pendiente"},
+                {hora:"16:00",cliente:"Andrés R.",servicio:"Fade + Barba",barbero:"Marco",status:"confirmada"},
+              ].map((c,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:i<3?`1px solid ${C2}`:"none"}}>
+                  <div style={{fontFamily:"'DM Mono',monospace",fontSize:12,color:Y,fontWeight:700,minWidth:40}}>{c.hora}</div>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:13,color:"#fff",fontWeight:600}}>{c.cliente}</div>
+                    <div style={{fontSize:11,color:MT}}>{c.servicio} · {c.barbero}</div>
+                  </div>
+                  <div style={{background:c.status==="confirmada"?"#0a1800":"#1a1000",border:`1px solid ${c.status==="confirmada"?"#22c55e":"#f59e0b"}`,borderRadius:6,padding:"3px 8px",fontSize:10,color:c.status==="confirmada"?"#22c55e":"#f59e0b",fontWeight:600}}>{c.status}</div>
+                </div>
+              ))}
+            </div>
+            {/* Alertas rápidas */}
+            <div style={{background:"#1a0a00",border:"1.5px solid #f59e0b",borderRadius:14,padding:"12px 16px",marginBottom:14}}>
+              <div style={{fontSize:12,color:"#f59e0b",fontWeight:700,marginBottom:6}}>⚠️ Alertas</div>
+              <div style={{fontSize:12,color:"#ccc",marginBottom:4}}>• Jorge P. no ha confirmado su cita de las 13:00</div>
+              <div style={{fontSize:12,color:"#ccc"}}>• Marco Jiménez tiene 3 horarios sin disponibilidad mañana</div>
+            </div>
+            {/* Accesos rápidos */}
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+              {[
+                {ico:"➕",lbl:"Nueva cita",sub:"agenda"},
+                {ico:"✂️",lbl:"Gestionar equipo",sub:"equipo"},
+                {ico:"👥",lbl:"Ver clientes",sub:"clientes"},
+                {ico:"📊",lbl:"Ver ingresos",sub:"ingresos"},
+              ].map(({ico,lbl,sub:s})=>(
+                <button key={lbl} onClick={()=>setSub(s)} style={{background:C1,border:`1.5px solid ${C2}`,borderRadius:12,padding:"14px 10px",display:"flex",alignItems:"center",gap:8,cursor:"pointer"}}>
+                  <span style={{fontSize:20}}>{ico}</span>
+                  <span style={{fontSize:12,color:"#ddd",fontWeight:600,textAlign:"left"}}>{lbl}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── AGENDA ── */}
+        {sub==="agenda"&&(
+          <div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+              <div style={{fontSize:14,fontWeight:700,color:"#fff"}}>Agenda del día</div>
+              <div style={{fontFamily:"'DM Mono',monospace",fontSize:11,color:MT}}>Lunes 27 Sep</div>
+            </div>
+            {[
+              {hora:"09:00",libre:true},
+              {hora:"10:00",cliente:"Rodrigo V.",servicio:"Fade + Barba",barbero:"Carlos",libre:false,status:"confirmada"},
+              {hora:"11:00",libre:true},
+              {hora:"11:30",cliente:"Luis M.",servicio:"Corte clásico",barbero:"Marco",libre:false,status:"confirmada"},
+              {hora:"13:00",cliente:"Jorge P.",servicio:"Barba sola",barbero:"Carlos",libre:false,status:"pendiente"},
+              {hora:"14:00",libre:true},
+              {hora:"15:00",libre:true},
+              {hora:"16:00",cliente:"Andrés R.",servicio:"Fade + Barba",barbero:"Marco",libre:false,status:"confirmada"},
+              {hora:"17:30",libre:true},
+            ].map((slot,i)=>(
+              <div key={i} style={{display:"flex",gap:10,marginBottom:6,alignItems:"stretch"}}>
+                <div style={{fontFamily:"'DM Mono',monospace",fontSize:11,color:MT,minWidth:36,paddingTop:10}}>{slot.hora}</div>
+                <div style={{flex:1,background:slot.libre?C1:slot.status==="confirmada"?"#0a1800":C1,border:`1.5px solid ${slot.libre?C2:slot.status==="confirmada"?"#22c55e":"#f59e0b"}`,borderRadius:10,padding:"10px 12px",minHeight:44}}>
+                  {slot.libre?(
+                    <div style={{fontSize:11,color:C3,fontStyle:"italic"}}>Disponible</div>
+                  ):(
+                    <div>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                        <div style={{fontSize:13,color:"#fff",fontWeight:600}}>{slot.cliente}</div>
+                        <div style={{fontSize:10,color:slot.status==="confirmada"?"#22c55e":"#f59e0b",fontWeight:700}}>{slot.status}</div>
+                      </div>
+                      <div style={{fontSize:11,color:MT,marginTop:2}}>{slot.servicio} · ✂️ {slot.barbero}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ── EQUIPO ── */}
+        {sub==="equipo"&&(
+          <div>
+            <div style={{fontSize:14,fontWeight:700,color:"#fff",marginBottom:14}}>Mi equipo</div>
+            {[
+              {ini:"CM",name:"Carlos Mendoza",rol:"Barbero senior",citas:4,rating:4.9,status:"activo",ingresos:"₡185,000"},
+              {ini:"MJ",name:"Marco Jiménez", rol:"Barbero",       citas:3,rating:4.7,status:"activo",ingresos:"₡142,000"},
+              {ini:"RV",name:"Rodrigo Vargas",rol:"Aprendiz",      citas:1,rating:4.5,status:"activo",ingresos:"₡89,000"},
+            ].map((b,i)=>(
+              <div key={i} style={{background:C1,border:`1.5px solid ${C2}`,borderRadius:14,padding:"14px 16px",marginBottom:10}}>
+                <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
+                  <Av initials={b.ini} size={44} dom={false}/>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:14,fontWeight:700,color:"#fff"}}>{b.name}</div>
+                    <div style={{fontSize:11,color:MT}}>{b.rol}</div>
+                  </div>
+                  <div style={{background:"#0a1800",border:"1px solid #22c55e",borderRadius:6,padding:"3px 8px",fontSize:10,color:"#22c55e",fontWeight:600}}>{b.status}</div>
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+                  {[
+                    {l:"Citas hoy",v:b.citas},
+                    {l:"Rating",v:`⭐ ${b.rating}`},
+                    {l:"Este mes",v:b.ingresos},
+                  ].map(({l,v})=>(
+                    <div key={l} style={{background:BK,borderRadius:8,padding:"8px 10px",textAlign:"center"}}>
+                      <div style={{fontSize:12,fontWeight:700,color:Y}}>{v}</div>
+                      <div style={{fontSize:9,color:MT,marginTop:2}}>{l}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {/* Horarios del equipo */}
+            <div style={{background:C1,border:`1.5px solid ${C2}`,borderRadius:14,padding:"14px 16px",marginTop:4}}>
+              <div style={{fontSize:11,color:MT,fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:12,textTransform:"uppercase"}}>Disponibilidad hoy</div>
+              {[
+                {name:"Carlos",slots:["10:00","13:00","17:30"],ocupados:[1]},
+                {name:"Marco", slots:["09:30","11:00","15:00","16:00"],ocupados:[2,3]},
+                {name:"Rodrigo",slots:["11:30","14:00"],ocupados:[]},
+              ].map((b,i)=>(
+                <div key={i} style={{marginBottom:i<2?12:0}}>
+                  <div style={{fontSize:12,color:"#ccc",fontWeight:600,marginBottom:6}}>{b.name}</div>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                    {b.slots.map((s,j)=>(
+                      <div key={j} style={{background:b.ocupados.includes(j)?Y:C2,color:b.ocupados.includes(j)?BK:"#888",borderRadius:6,padding:"4px 10px",fontSize:11,fontFamily:"'DM Mono',monospace",fontWeight:b.ocupados.includes(j)?700:400}}>{s}</div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── CLIENTES ── */}
+        {sub==="clientes"&&(
+          <div>
+            <div style={{fontSize:14,fontWeight:700,color:"#fff",marginBottom:6}}>Base de clientes</div>
+            <div style={{fontSize:12,color:MT,marginBottom:14}}>52 clientes activos este mes</div>
+            {/* Stats */}
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14}}>
+              {[
+                {v:"52",l:"Activos"},
+                {v:"68%",l:"Recurrentes"},
+                {v:"8.2",l:"Días entre visitas"},
+              ].map(({v,l})=>(
+                <div key={l} style={{background:C1,border:`1.5px solid ${C2}`,borderRadius:12,padding:"12px 10px",textAlign:"center"}}>
+                  <div style={{fontFamily:"'DM Mono',monospace",fontSize:16,fontWeight:700,color:Y}}>{v}</div>
+                  <div style={{fontSize:9,color:MT,marginTop:3}}>{l}</div>
+                </div>
+              ))}
+            </div>
+            {/* Client list */}
+            {[
+              {ini:"RV",name:"Rodrigo Vargas",visitas:12,ultimo:"Hace 3 días",gasto:"₡114,000",fav:"Fade + Barba"},
+              {ini:"LM",name:"Luis Morales",  visitas:8, ultimo:"Hace 1 semana",gasto:"₡76,000", fav:"Corte clásico"},
+              {ini:"JP",name:"Jorge Pérez",   visitas:6, ultimo:"Hace 2 semanas",gasto:"₡57,000",fav:"Barba sola"},
+              {ini:"AR",name:"Andrés Rojas",  visitas:5, ultimo:"Hace 3 semanas",gasto:"₡47,500",fav:"Fade clásico"},
+            ].map((c,i)=>(
+              <div key={i} style={{background:C1,border:`1.5px solid ${C2}`,borderRadius:14,padding:"12px 14px",marginBottom:8}}>
+                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+                  <Av initials={c.ini} size={38} dom={false}/>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:13,fontWeight:700,color:"#fff"}}>{c.name}</div>
+                    <div style={{fontSize:11,color:MT}}>{c.visitas} visitas · Último: {c.ultimo}</div>
+                  </div>
+                  <div style={{fontFamily:"'DM Mono',monospace",fontSize:13,fontWeight:700,color:Y}}>{c.gasto}</div>
+                </div>
+                <div style={{background:BK,borderRadius:8,padding:"6px 10px",display:"flex",justifyContent:"space-between"}}>
+                  <span style={{fontSize:11,color:MT}}>Servicio favorito</span>
+                  <span style={{fontSize:11,color:"#ccc",fontWeight:600}}>{c.fav}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ── INGRESOS ── */}
+        {sub==="ingresos"&&(
+          <div>
+          {(() => {
+            const [period, setPeriod] = useState("semana");
+            const DATA = {
+              dia: {label:"Hoy",total:"₡38,500",change:"+12%",positive:true,bars:[30,55,20,80,60,95,70,45,85,100,65,40],labels:["8a","9a","10a","11a","12p","1p","2p","3p","4p","5p","6p","7p"],highlight:9,citas:4,ticket:"₡9,625",meta:80},
+              semana: {label:"Esta semana",total:"₡112,500",change:"+18%",positive:true,bars:[55,80,45,90,65,100,72],labels:["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"],highlight:5,citas:14,ticket:"₡8,036",meta:65},
+              mes: {label:"Este mes",total:"₡450,000",change:"+24%",positive:true,bars:[60,75,50,85,70,90,65,80,55,95,70,85,60,75,90,80,65,70,85,95,75,60,80,70,90,85,65,75,80,95],labels:["1","","","","5","","","","","10","","","","","15","","","","","20","","","","","25","","","","","30"],highlight:29,citas:52,ticket:"₡8,654",meta:78},
+            };
+            const d = DATA[period];
+            const maxBar = Math.max(...d.bars);
+            return(
+              <div>
+                <div style={{display:"flex",background:C1,borderRadius:10,padding:3,marginBottom:14,border:`1px solid ${C2}`}}>
+                  {[["dia","Hoy"],["semana","Semana"],["mes","Mes"]].map(([k,lbl])=>(
+                    <button key={k} onClick={()=>setPeriod(k)} style={{flex:1,padding:"8px 0",border:"none",borderRadius:8,background:period===k?Y:"transparent",color:period===k?BK:MT,fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",transition:"all .2s"}}>{lbl}</button>
+                  ))}
+                </div>
+                <div style={{background:C1,border:`1.5px solid ${C2}`,borderRadius:14,padding:"16px",marginBottom:10}}>
+                  <div style={{fontSize:10,color:MT,fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:6,textTransform:"uppercase"}}>{d.label}</div>
+                  <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between"}}>
+                    <div>
+                      <div style={{fontFamily:"'DM Mono',monospace",fontSize:32,fontWeight:700,color:Y,lineHeight:1}}>{d.total}</div>
+                      <div style={{fontSize:12,color:d.positive?"#22c55e":"#ef4444",marginTop:6}}>↑ {d.change} vs período anterior</div>
+                    </div>
+                    <div style={{textAlign:"right"}}>
+                      <div style={{fontSize:10,color:MT,marginBottom:2}}>Meta</div>
+                      <div style={{fontSize:13,fontWeight:700,color:"#fff"}}>{d.meta}%</div>
+                      <div style={{width:60,height:4,background:C3,borderRadius:2,marginTop:4}}><div style={{width:`${d.meta}%`,height:"100%",background:Y,borderRadius:2}}/></div>
+                    </div>
+                  </div>
+                </div>
+                <div style={{background:C1,border:`1.5px solid ${C2}`,borderRadius:14,padding:"14px 12px",marginBottom:10}}>
+                  <div style={{fontSize:10,color:MT,fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:12,textTransform:"uppercase"}}>Ingresos por {period==="dia"?"hora":period==="semana"?"día":"día"}</div>
+                  <div style={{display:"flex",alignItems:"flex-end",gap:period==="mes"?2:5,height:80}}>
+                    {d.bars.map((h,i)=>{
+                      const isHi=i===d.highlight;
+                      const pct=(h/maxBar)*100;
+                      return(
+                        <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
+                          <div style={{width:"100%",height:pct*0.75,background:isHi?Y:`${Y}33`,borderRadius:"3px 3px 0 0",minHeight:4}}/>
+                          <span style={{fontSize:7,color:isHi?Y:MT,fontFamily:"'DM Mono',monospace"}}>{d.labels[i]||""}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
+                  {[
+                    {ico:"✂️",label:"Citas",val:d.citas,color:"#fff"},
+                    {ico:"💰",label:"Ticket promedio",val:d.ticket,color:Y},
+                    {ico:"⭐",label:"Calificación",val:"4.9",color:Y},
+                    {ico:"🔄",label:"Recurrentes",val:"68%",color:"#22c55e"},
+                  ].map(({ico,label,val,color})=>(
+                    <div key={label} style={{background:C1,border:`1.5px solid ${C2}`,borderRadius:12,padding:"12px 14px"}}>
+                      <div style={{fontSize:16,marginBottom:6}}>{ico}</div>
+                      <div style={{fontFamily:"'DM Mono',monospace",fontSize:16,fontWeight:700,color,marginBottom:2}}>{val}</div>
+                      <div style={{fontSize:10,color:MT}}>{label}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{background:C1,border:`1.5px solid ${C2}`,borderRadius:14,padding:"14px 16px"}}>
+                  <div style={{fontSize:10,color:MT,fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:10,textTransform:"uppercase"}}>Servicios más solicitados</div>
+                  {[
+                    {name:"Fade + Barba",pct:45,val:"₡42,750"},
+                    {name:"Corte clásico",pct:30,val:"₡28,500"},
+                    {name:"Barba sola",pct:15,val:"₡14,250"},
+                    {name:"Rasurado",pct:10,val:"₡9,500"},
+                  ].map(({name,pct,val})=>(
+                    <div key={name} style={{marginBottom:10}}>
+                      <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+                        <span style={{fontSize:12,color:"#ddd"}}>{name}</span>
+                        <span style={{fontSize:12,fontFamily:"'DM Mono',monospace",color:Y,fontWeight:700}}>{val}</span>
+                      </div>
+                      <div style={{height:4,background:C3,borderRadius:2}}><div style={{width:`${pct}%`,height:"100%",background:Y,borderRadius:2}}/></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
