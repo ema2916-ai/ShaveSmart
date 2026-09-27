@@ -736,6 +736,7 @@ const MisCitas = () => (
 // ── PANEL BARBERO ──────────────────────────────────────────────────────────────
 const PanelBarbero = () => {
   const [sub,setSub] = useState("inicio");
+  const [period, setPeriod] = useState("semana");
   const TABS = [
     {k:"inicio",  ico:"🏠", lbl:"Inicio"},
     {k:"agenda",  ico:"📅", lbl:"Agenda"},
@@ -971,8 +972,7 @@ const PanelBarbero = () => {
         {/* ── INGRESOS ── */}
         {sub==="ingresos"&&(
           <div>
-          {(() => {
-            const [period, setPeriod] = useState("semana");
+          {(()=>{
             const DATA = {
               dia: {label:"Hoy",total:"₡38,500",change:"+12%",positive:true,bars:[30,55,20,80,60,95,70,45,85,100,65,40],labels:["8a","9a","10a","11a","12p","1p","2p","3p","4p","5p","6p","7p"],highlight:9,citas:4,ticket:"₡9,625",meta:80},
               semana: {label:"Esta semana",total:"₡112,500",change:"+18%",positive:true,bars:[55,80,45,90,65,100,72],labels:["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"],highlight:5,citas:14,ticket:"₡8,036",meta:65},
